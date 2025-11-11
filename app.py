@@ -53,21 +53,117 @@ st.sidebar.markdown("### 🎯 Performance")
 st.sidebar.metric("Accuracy", "89%")
 st.sidebar.metric("ROC-AUC", "0.94")
 
-st.subheader("📝 Entrez les données de la réclamation")
+st.subheader("📝 Informations de la Transaction")
+
+st.info("💡 **Note**: Entrez les valeurs normalisées des features. Utilisez des valeurs entre -3 et 3 pour des transactions typiques.")
+
+feature_names = metadata['feature_names'][:10]
+
+feature_labels = {
+    'Time': '⏰ Temps (secondes depuis première transaction)',
+    'V1': '🔢 Feature V1 (Composante PCA 1)',
+    'V2': '🔢 Feature V2 (Composante PCA 2)',
+    'V3': '🔢 Feature V3 (Composante PCA 3)',
+    'V4': '🔢 Feature V4 (Composante PCA 4)',
+    'V5': '🔢 Feature V5 (Composante PCA 5)',
+    'V6': '🔢 Feature V6 (Composante PCA 6)',
+    'V7': '🔢 Feature V7 (Composante PCA 7)',
+    'V8': '🔢 Feature V8 (Composante PCA 8)',
+    'V9': '🔢 Feature V9 (Composante PCA 9)',
+    'Amount': '💰 Montant de la Transaction (€)'
+}
+
+feature_descriptions = {
+    'Time': 'Temps écoulé en secondes depuis la première transaction du dataset',
+    'Amount': 'Montant de la transaction en euros',
+}
 
 col1, col2 = st.columns(2)
 
 inputs = {}
-feature_list = metadata['feature_names'][:10]
 
-for idx, feature in enumerate(feature_list):
-    with col1 if idx % 2 == 0 else col2:
-        inputs[feature] = st.number_input(
-            feature.replace('_', ' ').title(),
+with col1:
+    st.markdown("#### ⏰ Informations Temporelles")
+    if 'Time' in feature_names:
+        inputs['Time'] = st.number_input(
+            '⏰ Temps (secondes)',
+            min_value=0.0,
+            max_value=200000.0,
             value=0.0,
-            key=feature,
-            help=f"Entrez la valeur pour {feature}"
+            step=1000.0,
+            help='Temps écoulé depuis la première transaction'
         )
+    
+    st.markdown("#### 💰 Montant")
+    if 'Amount' in feature_names:
+        inputs['Amount'] = st.number_input(
+            '💰 Montant (€)',
+            min_value=0.0,
+            max_value=10000.0,
+            value=100.0,
+            step=10.0,
+            help='Montant de la transaction en euros'
+        )
+
+with col2:
+    st.markdown("#### 🔢 Features Transformées (PCA)")
+    st.caption("Valeurs normalisées issues de l'Analyse en Composantes Principales")
+    
+    for feature in feature_names:
+        if feature not in ['Time', 'Amount']:
+            inputs[feature] = st.number_input(
+                f'{feature}',
+                min_value=-5.0,
+                max_value=5.0,
+                value=0.0,
+                step=0.1,
+                help='Composante PCA normalisée'
+            )
+
+st.markdown("---")
+
+with st.expander("ℹ️ Qu'est-ce que les features V1-V28 ?"):
+    st.markdown("""
+    ### Features Anonymisées
+    
+    Pour des raisons de **confidentialité**, les features originales ont été transformées 
+    via une **Analyse en Composantes Principales (PCA)**.
+    
+    **Ce que vous devez savoir** :
+    - **V1 à V28** : Composantes principales issues de la transformation PCA
+    - **Time** : Temps en secondes depuis la première transaction
+    - **Amount** : Montant réel de la transaction en euros
+    
+    **Valeurs typiques** :
+    - Features V1-V28 : Entre -3 et +3 pour 99% des transactions
+    - Time : 0 à 172,800 (48 heures)
+    - Amount : 0 à 25,000€ (moyenne ~88€)
+    
+    **Pour tester** :
+    - Transaction normale : Laissez toutes les V à 0, montant = 100€
+    - Transaction suspecte : Mettez quelques V à ±3, montant élevé
+    """)
+
+st.markdown("---")
+
+with st.expander("🎯 Exemples de Transactions"):
+    st.markdown("""
+    ### Transaction NORMALE ✅
+    - Time: 5000
+    - V1 à V28: 0
+    - Amount: 50€
+    
+    ### Transaction SUSPECTE 🚨
+    - Time: 80000
+    - V1: 2.5, V2: -3.1, V3: 1.8
+    - V4-V28: 0
+    - Amount: 5000€
+    
+    ### Petite Transaction LÉGITIME ✅
+    - Time: 1000
+    - Toutes V: 0
+    - Amount: 10€
+    """)
 
 if st.button("🔍 Analyser la réclamation", use_container_width=True):
     with st.spinner("Analyse en cours..."):
