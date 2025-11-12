@@ -5,6 +5,15 @@ from tensorflow import keras
 import pickle
 
 st.set_page_config(
+    page_title="Votre Titre",
+    page_icon="🔍",
+    layout="wide"
+)
+
+# Forcer le mode texte brut pour éviter regex bugs
+import os
+os.environ['STREAMLIT_MARKDOWN_AUTOLINK'] = 'false'
+st.set_page_config(
     page_title="Détection de Fraude LSTM - Maram Chebbi",
     page_icon="🔍",
     layout="wide"
