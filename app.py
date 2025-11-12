@@ -3,21 +3,17 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 import pickle
-
-st.set_page_config(
-    page_title="Votre Titre",
-    page_icon="🔍",
-    layout="wide"
-)
-
-# Forcer le mode texte brut pour éviter regex bugs
 import os
-os.environ['STREAMLIT_MARKDOWN_AUTOLINK'] = 'false'
+
+# IMPORTANT : set_page_config DOIT être la PREMIÈRE commande Streamlit
 st.set_page_config(
     page_title="Détection de Fraude LSTM - Maram Chebbi",
     page_icon="🔍",
     layout="wide"
 )
+
+# Forcer le mode texte brut pour éviter regex bugs
+os.environ['STREAMLIT_MARKDOWN_AUTOLINK'] = 'false'
 
 @st.cache_resource
 def load_models():
@@ -61,7 +57,7 @@ st.markdown("""
 
 st.title("🔍 Détection de Fraude LSTM")
 st.markdown("### Système intelligent de détection de fraude d'assurance")
-st.markdown("**Développé par** : Maram Chebbi | ESPRIT & IRA Le Mans")
+st.write("Développé par : Maram Chebbi | ESPRIT & IRA Le Mans")
 st.markdown("---")
 
 if not models_loaded:
@@ -260,7 +256,7 @@ if st.button("🔍 Analyser la Transaction", use_container_width=True):
 st.markdown("---")
 
 with st.expander("📚 À propos des Features"):
-    st.markdown("""
+    st.write("""
     ### Explication des Features
     
     **🔒 Confidentialité et Anonymisation**
@@ -286,7 +282,7 @@ with st.expander("📚 À propos des Features"):
     """)
 
 with st.expander("🎯 Guide d'Utilisation"):
-    st.markdown("""
+    st.write("""
     ### Comment utiliser cet outil ?
     
     **1. Transaction Normale** ✅
@@ -313,7 +309,7 @@ with st.expander("🎯 Guide d'Utilisation"):
     """)
 
 with st.expander("📈 Performance du Modèle"):
-    st.markdown("""
+    st.write("""
     ### Métriques de Performance
     
     **Modèle LSTM** (Long Short-Term Memory)
@@ -337,4 +333,5 @@ with st.expander("📈 Performance du Modèle"):
     """)
 
 st.markdown("---")
-
+st.caption("Développé par Maram Chebbi - Data Science & Actuariat")
+st.text("Contact: chebbimaram0[at]gmail.com")
